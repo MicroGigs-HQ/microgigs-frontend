@@ -123,7 +123,7 @@ const UsernameModal = ({ isOpen, onClose, onSave, username, setUsername }: Usern
 }
 
 // Function to truncate wallet address
-const truncateAddress = (address: string | undefined): string => {
+export const truncateAddress = (address: string | undefined): string => {
   if (!address) return ""
   return `${address.slice(0, 6)}...${address.slice(-4)}`
 }

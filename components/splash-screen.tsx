@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { MicroGigsLogo } from "./logo"
+import {MicroGigsLogo} from "./logo"
 
 interface SplashScreenProps {
   onComplete?: () => void
@@ -41,27 +41,27 @@ export function SplashScreen({ onComplete, minDisplayTime = 2000 }: SplashScreen
   if (!isVisible) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black transition-opacity duration-500">
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#FF6D47] transition-opacity duration-500">
       <div className="flex flex-col items-center">
         <div className="animate-pulse">
           <MicroGigsLogo size="xl" />
         </div>
         
-        <p className="mt-4 text-zinc-400 text-sm">Decentralized Task Marketplace</p>
+        <p className="mt-4 text-white text-sm">Decentralized Task Marketplace</p>
         
         <div className="mt-8 w-48 h-1 bg-zinc-800 rounded-full overflow-hidden">
           <div 
-            className="h-full bg-blue-600 rounded-full transition-all duration-300 ease-out"
+            className="h-full bg-white rounded-full transition-all duration-300 ease-out"
             style={{ width: `${loadingProgress}%` }}
           />
         </div>
         
-        <div className="mt-2 text-xs text-zinc-500">
+        <div className="mt-2 text-xs text-white">
           {loadingProgress < 100 ? "Loading..." : "Ready"}
         </div>
       </div>
       
-      <div className="absolute bottom-8 text-xs text-zinc-600">
+      <div className="absolute bottom-8 text-xs text-white">
         Powered by Blockchain
       </div>
     </div>

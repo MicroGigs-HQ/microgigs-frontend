@@ -19,14 +19,13 @@ const TaskDetails = () => {
     currency: "USDC",
     postedBy: "@Demmigod",
     applicants: 23,
-    dueDate: { days: 4, hours: 7 }, // For the success modal
+    dueDate: { days: 4, hours: 7 }, 
   };
 
   const handleApplyForGig = () => {
-    // In a real application, you would handle the application logic here
-    // e.g., API call to apply for the gig
+  
     console.log("Applying for gig...");
-    setShowSuccessModal(true); // Show the success modal on apply
+    setShowSuccessModal(true); 
   };
 
   const handleShareGig = () => {

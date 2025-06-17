@@ -7,6 +7,7 @@ import { Name, Identity, Address, Avatar, EthBalance } from "@coinbase/onchainki
 import { ConnectWallet, Wallet, WalletDropdown, WalletDropdownDisconnect } from "@coinbase/onchainkit/wallet"
 import { Search } from "lucide-react"
 import Image from "next/image"
+import { useRouter } from 'next/navigation'
 import abstract from "../../public/waving-orange.png"
 import logo from "../../public/microgigs-logo.svg"
 import usdc from "../../public/USDC.svg"
@@ -129,6 +130,7 @@ const truncateAddress = (address: string | undefined): string => {
 }
 
 export default function SimpleConnectScreen() {
+  const router = useRouter()
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [showUsernameModal, setShowUsernameModal] = useState(false)
   const [username, setUsername] = useState("")
@@ -138,6 +140,11 @@ export default function SimpleConnectScreen() {
   
   const { address, isConnected } = useAccount()
   const { setFrameReady, isFrameReady, context } = useMiniKit()
+
+  // Function to navigate to profile page
+  const navigateToProfile = () => {
+    router.push('/profile')
+  }
 
   // Detect if running in Farcaster frame or embedded environment
   useEffect(() => {
@@ -222,8 +229,12 @@ export default function SimpleConnectScreen() {
               </div>
             ) : (
               <div className="flex items-center gap-3">
-                {/* Profile picture */}
-                <div className="w-8 h-8 rounded-full overflow-hidden bg-red-500 flex items-center justify-center">
+                {/* Profile picture - now clickable */}
+                <div 
+                  className="w-8 h-8 rounded-full overflow-hidden bg-red-500 flex items-center justify-center cursor-pointer hover:bg-red-600 transition-colors"
+                  onClick={navigateToProfile}
+                  title="Go to Profile"
+                >
                   <span className="text-white text-sm font-medium">
                     {username.charAt(0).toUpperCase() || 'G'}
                   </span>

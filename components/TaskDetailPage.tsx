@@ -10,16 +10,20 @@ import eth from "../public/ETH.png"
 import { MobileNavLayout } from "@/components/layout/MobileNavLayout"
 import { useGetTask } from "@/hooks/useGetTaskDetails"
 import { TaskDetailPageProps } from "@/models/types"
-import { truncateAddress } from "@/lib/utils"
+import { truncateAddress, taskStatus } from "@/lib/utils"
+import ApplicationSuccessModal from "@/components/modals/GigApplicationSuccessModal";
+import { useApplyTaskHook } from "@/hooks/useApplyTask"
 
 export default function TaskDetailPage({ taskId }: TaskDetailPageProps) {
   const router = useRouter()
   const { address, isConnected } = useAccount()
   const [username, setUsername] = useState("")
   const [hasApplied, setHasApplied] = useState(false)
-  const [isApplying, setIsApplying] = useState(false)
+  const [isSubmittingTask, setIsSubmittingTask] = useState(false)
+  const [showSuccessModal, setShowSuccessModal] = useState(true)
 
   const { task, loading, error } = useGetTask(taskId as `0x${string}`)
+  const { applyTask, isPendingTask, isSuccessTask, isConfirmingTask, isErrorTask } = useApplyTaskHook(taskId as `0x${string}`);
 
   useEffect(() => {
     const savedUsername = localStorage.getItem("microgigs_username")
@@ -30,25 +34,6 @@ export default function TaskDetailPage({ taskId }: TaskDetailPageProps) {
 
   const handleBack = () => {
     router.back()
-  }
-
-  const handleApply = async () => {
-    if (!isConnected) {
-      alert("Please connect your wallet to apply")
-      return
-    }
-
-    setIsApplying(true)
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-      setHasApplied(true)
-      alert("Successfully applied to this gig!")
-    } catch (error) {
-      alert("Failed to apply. Please try again.")
-    } finally {
-      setIsApplying(false)
-    }
   }
 
   const handleShare = async () => {
@@ -91,7 +76,7 @@ export default function TaskDetailPage({ taskId }: TaskDetailPageProps) {
             </div>
 
             <div className="flex flex-col">
-              <span className="text-sm font-medium text-gray-900">Gm, {username || "Weng"} 👋</span>
+              <span className="text-sm font-medium text-gray-900">Gm, {username || "Gm"} 👋</span>
               <span className="text-xs text-gray-500">What are we making today?</span>
             </div>
           </div>
@@ -114,7 +99,12 @@ export default function TaskDetailPage({ taskId }: TaskDetailPageProps) {
 
         {/* Content */}
         <div className="px-4 pb-4">
-          {loading && <p className="text-center text-sm text-gray-500">Loading task...</p>}
+          {loading && 
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
+              <p className="text-gray-500">Loading task details...</p>
+            </div>
+          }
           {error && <p className="text-center text-sm text-red-500">{error}</p>}
 
           {!loading && !task && !error && (
@@ -169,27 +159,52 @@ export default function TaskDetailPage({ taskId }: TaskDetailPageProps) {
 
               {/* Action Buttons */}
               <div className="space-y-3">
+                {taskStatus(Number(task.status)) === "OPEN" && task.poster !== address && (
                 <button
-                  onClick={handleApply}
-                  disabled={isApplying || hasApplied || !isConnected}
+                  onClick={
+                    () => applyTask((taskId as any))
+                  }
+                  disabled={isPendingTask || isConfirmingTask}
                   className={`w-full py-3 px-4 rounded-2xl font-semibold text-base transition-colors ${
                     hasApplied
                       ? "bg-green-500 text-white cursor-default"
                       : !isConnected
                       ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-                      : isApplying
+                      : isSubmittingTask
                       ? "bg-orange-400 text-white cursor-not-allowed"
                       : "bg-orange-500 hover:bg-orange-600 text-white cursor-pointer"
                   }`}
                 >
-                  {hasApplied
+                  {!isConnected ? "Connect Wallet to Apply" : isPendingTask || isConfirmingTask ? "Applying..." : isSuccessTask ? "Applied Successfully ✓" : "Apply For This Gig"}
+                  {/* {hasApplied
                     ? "Applied Successfully ✓"
                     : isApplying
                     ? "Applying..."
                     : !isConnected
                     ? "Connect Wallet to Apply"
-                    : "Apply For This Gig"}
+                    : "Apply For This Gig"} */}
                 </button>
+                )}
+
+                {(taskStatus(Number(task.status)) === "ASSIGNED" || taskStatus(Number(task.status)) === "IN_PROGRESS" ) && task.completer == address && (
+                  <button
+                  disabled={isPendingTask || isConfirmingTask}
+                  className={`w-full py-3 px-4 rounded-2xl font-semibold text-base transition-colors ${
+                      isSubmittingTask
+                      ? "bg-orange-400 text-white cursor-not-allowed"
+                      : "bg-green-500 hover:bg-orange-600 text-white cursor-pointer"
+                  }`}
+                >
+                  {isSubmittingTask ? "Submitting..." : isSuccessTask ? "Submitted Successfully ✓" : "Submit Work"}
+                  {/* {hasApplied
+                    ? "Applied Successfully ✓"
+                    : isApplying
+                    ? "Applying..."
+                    : !isConnected
+                    ? "Connect Wallet to Apply"
+                    : "Apply For This Gig"} */}
+                </button>
+                )}
 
                 <button
                   onClick={handleShare}
@@ -211,6 +226,19 @@ export default function TaskDetailPage({ taskId }: TaskDetailPageProps) {
           )}
         </div>
       </div>
+      {/* Application Success Modal */}
+      <ApplicationSuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+        timeRemaining="4days,7hrs"
+        onViewGig={() => {
+          setShowSuccessModal(false)
+        }}
+        onMessageOwner={() => {
+          setShowSuccessModal(false)
+          alert("Messaging feature coming soon!")
+        }}
+      />
     </MobileNavLayout>
   )
 }

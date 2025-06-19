@@ -73,7 +73,7 @@ export default function MyGigs() {
         <Tabs defaultValue="posted" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="posted">Tasks I Posted</TabsTrigger>
-            <TabsTrigger value="working">Tasks I'm Working On</TabsTrigger>
+            <TabsTrigger value="working">Tasks I&apos;m Working On</TabsTrigger>
           </TabsList>
 
           <TabsContent value="posted" className="space-y-4">
@@ -183,7 +183,7 @@ export default function MyGigs() {
           </TabsContent>
 
           <TabsContent value="working" className="space-y-4">
-            <h2 className="text-lg font-medium">Tasks You're Working On</h2>
+            <h2 className="text-lg font-medium">Tasks You&apos;re Working On</h2>
 
             {[
               {

@@ -1,17 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import {
-  Home,
-  Bell,
-  Plus,
-  MessageCircle,
-  Settings,
   ExternalLink,
   Github,
   X,
-  Users,
   Copy,
-  Search,
 } from "lucide-react";
 
 import Image from "next/image"

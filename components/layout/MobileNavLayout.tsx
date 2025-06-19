@@ -27,7 +27,6 @@ const navItems: NavItem[] = [
 export function MobileNavLayout({ children }: LayoutProps) {
   const pathname = usePathname()
   
-  // Don't show navbar on onboarding pages
   const hideNavbar = pathname === '/onboarding' || pathname === '/splash'
   
   return (

@@ -35,10 +35,10 @@ export default function SubmitTaskModal({
       setText("")
       onClose()
     } catch (error) {
-      console.error("Error submitting:", error);
-      toast.error("Failed to submit. Please try again.");
+        console.error("Error submitting:", error);
+        toast.error("Failed to submit. Please try again.");
     } finally {
-      setIsSubmitting(false)
+        setIsSubmitting(false)
     }
   }
 
@@ -60,9 +60,8 @@ export default function SubmitTaskModal({
           </button>
         </div>
 
-        {/* Header with Orange Gradient */}
+        {/* Header */}
         <div className="relative h-32 overflow-hidden bg-gradient-to-br from-orange-400 via-orange-500 to-red-500">
-          {/* Abstract pattern overlay */}
           <div className="absolute inset-0 opacity-20">
             <svg viewBox="0 0 400 128" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
               <defs>

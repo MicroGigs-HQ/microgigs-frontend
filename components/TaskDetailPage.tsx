@@ -110,7 +110,7 @@ export default function TaskDetailPage({ taskId }: TaskDetailPageProps) {
         {/* Content */}
         <div className="px-4 pb-4">
           {loading && 
-            <div className="text-center pt-120">
+            <div className="text-center mt-60">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
               <p className="text-gray-500">Loading task details...</p>
             </div>

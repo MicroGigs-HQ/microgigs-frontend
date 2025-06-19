@@ -1,38 +1,25 @@
 "use client";
 import { ArrowLeft, Search, Wallet } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
 import { MobileNavLayout } from "@/components/layout/MobileNavLayout";
 import Image from "next/image";
 import logo from "../../public/microgigs-logo.svg";
 import { useAccount } from "wagmi";
-import { useMiniKit } from "@coinbase/onchainkit/minikit";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ConnectWallet } from "@coinbase/onchainkit/wallet";
 import { truncateAddress } from "@/lib/utils";
 
 export default function ChatPage() {
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [showUsernameModal, setShowUsernameModal] = useState(false);
   const [username, setUsername] = useState("");
-  const [isFarcasterFrame, setIsFarcasterFrame] = useState(false);
-  const [isEmbedded, setIsEmbedded] = useState(false);
-  const [hasUsername, setHasUsername] = useState(false);
 
   const { address, isConnected } = useAccount();
-  const { setFrameReady, isFrameReady, context } = useMiniKit();
 
-  const handleConnectClick = () => {
-    if (!hasUsername) {
-      setShowUsernameModal(true);
+  useEffect(() => {
+    const savedUsername = localStorage.getItem("microgigs_username")
+    if (savedUsername) {
+      setUsername(savedUsername)
     }
-    // If user has username, the ConnectWallet component will handle the connection
-  };
+  }, [])
 
-  const handleUsernameSaved = () => {
-    setHasUsername(true);
-  };
   const chats = [
     {
       avatarSrc: "/placeholder-user.jpg",
@@ -92,20 +79,12 @@ export default function ChatPage() {
             {/* Profile section under logo (left aligned) */}
             {!isConnected ? (
               <div className="flex items-center gap-2">
-                {!hasUsername ? (
-                  <button
-                    onClick={handleConnectClick}
-                    className="bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium px-4 py-2 rounded-lg transition-colors"
-                  >
-                    Get Started
-                  </button>
-                ) : (
+                
                   <Wallet>
                     <ConnectWallet className="bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium px-4 py-2 rounded-lg transition-colors">
                       Connect Wallet
                     </ConnectWallet>
                   </Wallet>
-                )}
               </div>
             ) : (
               <div className="flex items-center gap-3">

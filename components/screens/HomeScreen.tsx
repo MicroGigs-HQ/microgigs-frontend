@@ -11,7 +11,6 @@ import abstract from "../../public/waving-orange.png"
 import logo from "../../public/microgigs-logo.svg"
 import usdc from "../../public/USDC.svg"
 import eth from "../../public/ETH.png";
-import { MobileNavLayout } from "../layout/MobileNavLayout"
 import type { Task } from "@/models/types"
 import { useAllTasks } from "@/hooks/useGetAllTasks"
 import { taskStatus, truncateAddress, daysFromNow } from "@/lib/utils"

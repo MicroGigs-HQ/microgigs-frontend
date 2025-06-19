@@ -12,7 +12,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
     {
-        name: "Home",
+        name: "Home 1",
         icon: (active: boolean) => (
             <Home className={`w-6 h-6 ${active ? "text-[#FF3C02]" : "text-muted-foreground"}`} />
         ),

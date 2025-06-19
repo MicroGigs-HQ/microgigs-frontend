@@ -10,7 +10,7 @@ import { useAccount } from "wagmi";
 import { useMiniKit } from "@coinbase/onchainkit/minikit";
 import { useState } from "react";
 import { ConnectWallet } from "@coinbase/onchainkit/wallet";
-import { truncateAddress } from "@/components/screens/HomeScreen";
+import { truncateAddress } from "@/lib/utils";
 
 export default function ChatPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");

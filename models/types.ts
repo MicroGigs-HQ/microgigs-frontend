@@ -16,15 +16,16 @@ export interface TaskDetailPageProps {
   taskId?: string
 }
 
-// export interface Task {
-//   taskAddress: Address
-//   poster: Address
-//   completer: Address
-//   reward: bigint
-//   deadline: bigint
-//   title: string
-//   description: string
-//   status: number
-//   category?: string
-//   submissionDetails?: string
-// }
+export interface PageProps {
+  params: {
+    id: string
+  }
+}
+
+export interface ApplicationSuccessModalProps {
+  isOpen: boolean
+  onClose: () => void
+  timeRemaining: string
+  onViewGig: () => void
+  onMessageOwner: () => void
+}

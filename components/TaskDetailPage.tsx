@@ -10,20 +10,24 @@ import eth from "../public/ETH.png"
 import { MobileNavLayout } from "@/components/layout/MobileNavLayout"
 import { useGetTask } from "@/hooks/useGetTaskDetails"
 import { TaskDetailPageProps } from "@/models/types"
-import { truncateAddress, taskStatus } from "@/lib/utils"
+import { truncateAddress, taskStatus, daysFromNow } from "@/lib/utils"
 import ApplicationSuccessModal from "@/components/modals/GigApplicationSuccessModal";
 import { useApplyTaskHook } from "@/hooks/useApplyTask"
+import toast from "react-hot-toast"
+import { useSubmitWorkHook } from "@/hooks/useSubmitWork"
+import SubmitTaskModal from "./modals/SubmitTaskModal"
 
 export default function TaskDetailPage({ taskId }: TaskDetailPageProps) {
   const router = useRouter()
   const { address, isConnected } = useAccount()
   const [username, setUsername] = useState("")
   const [hasApplied, setHasApplied] = useState(false)
-  const [isSubmittingTask, setIsSubmittingTask] = useState(false)
-  const [showSuccessModal, setShowSuccessModal] = useState(true)
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [showSubmissionModal, setShowSubmissionModal] = useState(false)
 
   const { task, loading, error } = useGetTask(taskId as `0x${string}`)
   const { applyTask, isPendingTask, isSuccessTask, isConfirmingTask, isErrorTask } = useApplyTaskHook(taskId as `0x${string}`);
+  const { submitWork, isPendingSubmit, isConfirmingSubmit, isSuccessSubmit } = useSubmitWorkHook(taskId as `0x${string}`);
 
   useEffect(() => {
     const savedUsername = localStorage.getItem("microgigs_username")
@@ -52,6 +56,12 @@ export default function TaskDetailPage({ taskId }: TaskDetailPageProps) {
       alert("Link copied to clipboard!")
     }
   }
+
+  useEffect(() => {
+    if(isSuccessTask) {
+      setShowSuccessModal(true);
+    }
+  }, [isSuccessTask])
 
   const navigateToProfile = () => {
     router.push("/profile")
@@ -100,7 +110,7 @@ export default function TaskDetailPage({ taskId }: TaskDetailPageProps) {
         {/* Content */}
         <div className="px-4 pb-4">
           {loading && 
-            <div className="text-center">
+            <div className="text-center pt-120">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto mb-4"></div>
               <p className="text-gray-500">Loading task details...</p>
             </div>
@@ -164,13 +174,11 @@ export default function TaskDetailPage({ taskId }: TaskDetailPageProps) {
                   onClick={
                     () => applyTask((taskId as any))
                   }
-                  disabled={isPendingTask || isConfirmingTask}
+                  disabled={isPendingTask || isConfirmingTask || isSuccessTask}
                   className={`w-full py-3 px-4 rounded-2xl font-semibold text-base transition-colors ${
-                    hasApplied
-                      ? "bg-green-500 text-white cursor-default"
-                      : !isConnected
+                    !isConnected
                       ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-                      : isSubmittingTask
+                      : isPendingTask || isConfirmingTask || isSuccessTask
                       ? "bg-orange-400 text-white cursor-not-allowed"
                       : "bg-orange-500 hover:bg-orange-600 text-white cursor-pointer"
                   }`}
@@ -181,14 +189,15 @@ export default function TaskDetailPage({ taskId }: TaskDetailPageProps) {
 
                 {(taskStatus(Number(task.status)) === "ASSIGNED" || taskStatus(Number(task.status)) === "IN_PROGRESS" ) && task.completer == address && (
                   <button
-                  disabled={isPendingTask || isConfirmingTask}
+                  onClick={()=> setShowSubmissionModal(true)}
+                  disabled={isPendingTask || isConfirmingTask || isSuccessSubmit}
                   className={`w-full py-3 px-4 rounded-2xl font-semibold text-base transition-colors ${
-                      isSubmittingTask
+                      isPendingSubmit || isConfirmingSubmit || isSuccessSubmit
                       ? "bg-orange-400 text-white cursor-not-allowed"
                       : "bg-green-500 hover:bg-orange-600 text-white cursor-pointer"
                   }`}
                 >
-                  {isSubmittingTask ? "Submitting..." : isSuccessTask ? "Submitted Successfully ✓" : "Submit Work"}
+                  {isPendingSubmit || isConfirmingSubmit ? "Submitting..." : isSuccessSubmit ? "Submitted Successfully ✓" : "Submit Work"}
                 </button>
                 )}
 
@@ -216,14 +225,25 @@ export default function TaskDetailPage({ taskId }: TaskDetailPageProps) {
       <ApplicationSuccessModal
         isOpen={showSuccessModal}
         onClose={() => setShowSuccessModal(false)}
-        timeRemaining="4days,7hrs"
+        timeRemaining={`${daysFromNow(task?.deadline)} days`}
         onViewGig={() => {
           setShowSuccessModal(false)
         }}
         onMessageOwner={() => {
           setShowSuccessModal(false)
-          alert("Messaging feature coming soon!")
+          toast.success("Messaging feature coming soon!")
         }}
+      />
+
+      <SubmitTaskModal
+        isOpen={showSubmissionModal}
+        onClose={() => setShowSubmissionModal(false)}
+        taskAddress={task?.taskAddress}
+        title="Submit Task"
+        placeholder="Details here..."
+        submitText="Submit"
+        cancelText="Cancel"
+        maxLength={500}
       />
     </MobileNavLayout>
   )

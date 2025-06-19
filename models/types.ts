@@ -11,3 +11,11 @@ export interface Task {
   submissionDetails?: string;
   posterRating?: number;
 }
+
+export interface CreateGigData {
+  taskTitle: string;
+  price: string;
+  category: string;
+  description: string;
+  deadline: string;
+}

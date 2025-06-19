@@ -29,3 +29,14 @@ export interface ApplicationSuccessModalProps {
   onViewGig: () => void
   onMessageOwner: () => void
 }
+
+export interface SubmitTaskModalProps {
+  isOpen: boolean
+  onClose: () => void
+  taskAddress?: string
+  title?: string
+  placeholder?: string
+  submitText?: string
+  cancelText?: string
+  maxLength?: number
+}

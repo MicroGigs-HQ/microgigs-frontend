@@ -19,6 +19,19 @@ export function convertDate(timestamp: string | number | bigint | unknown) {
   return `${day} ${month}, ${year}`;
 }
 
+export function daysFromNow(timestamp: string | number | bigint | unknown) {
+  const numericTimestamp = typeof timestamp === 'bigint' ? Number(timestamp) : Number(timestamp);
+
+  const targetDate = new Date(numericTimestamp * 1000);
+  const now = new Date();
+
+  const diffInMs = targetDate.getTime() - now.getTime();
+
+  const diffInDays = Math.round(diffInMs / (1000 * 60 * 60 * 24));
+
+  return diffInDays;
+}
+
 export function taskStatus(status: number) {
   switch (status) {
     case 0:
@@ -68,4 +81,9 @@ export function taskStatusBgColor(status: number) {
     default:
       return "bg-blue-100";
   }
+}
+
+export function truncateAddress(address: string | undefined): string {
+  if (!address) return ""
+  return `${address.slice(0, 6)}...${address.slice(-4)}`
 }

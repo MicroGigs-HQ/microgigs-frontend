@@ -11,3 +11,20 @@ export interface Task {
   submissionDetails?: string;
   posterRating?: number;
 }
+
+export interface TaskDetailPageProps {
+  taskId?: string
+}
+
+// export interface Task {
+//   taskAddress: Address
+//   poster: Address
+//   completer: Address
+//   reward: bigint
+//   deadline: bigint
+//   title: string
+//   description: string
+//   status: number
+//   category?: string
+//   submissionDetails?: string
+// }

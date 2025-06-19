@@ -10,7 +10,9 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ArrowLeft, Calendar, Wallet } from "lucide-react"
+import { ArrowLeft, Wallet } from "lucide-react"
+import Header from "@/components/ui/header";
+import {MobileNavLayout} from "@/components/layout/MobileNavLayout";
 
 export default function CreateGig() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -27,85 +29,81 @@ export default function CreateGig() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-zinc-50">
+    <div className="flex flex-col">
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-white border-b border-zinc-200">
-        <div className="container flex items-center h-14 px-4">
-          <Link href="/" className="flex items-center gap-1 text-zinc-500">
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back</span>
-          </Link>
-          <h1 className="text-lg font-medium mx-auto">Create New Gig</h1>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="flex-1 container px-4 py-6">
-        <Card className="max-w-md mx-auto">
-          <form onSubmit={handleSubmit}>
-            <CardHeader>
-              <CardTitle className="text-xl">Task Details</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="title">Title</Label>
-                <Input id="title" placeholder="Describe your task briefly" required />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  placeholder="Provide detailed information about the task requirements"
-                  rows={4}
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="category">Category</Label>
-                  <Select required>
-                    <SelectTrigger id="category">
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="design">Design</SelectItem>
-                      <SelectItem value="development">Development</SelectItem>
-                      <SelectItem value="content">Content</SelectItem>
-                      <SelectItem value="marketing">Marketing</SelectItem>
-                      <SelectItem value="translation">Translation</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
+      <Header/>
+      {/*<MobileBottomNav/>*/}
+      <MobileNavLayout>
+        <main className=" mx-auto">
+          <Card className="max-w-md mx-auto border-0 shadow-0">
+            <form onSubmit={handleSubmit}>
+              <CardHeader>
+                <Link href="/" className="text-gray-900">
+                  <ArrowLeft />
+                </Link>
+                <CardTitle className="text-xl text-gray-900">Fill in the details to post a gig.</CardTitle>
+                <p className="text-mobile-form-title text-xs md:text-sm">this post will be made public, workers can see and apply for it</p>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-1">
+                  <Label htmlFor="title" className="text-mobile-form-title ml-2">Task Title</Label>
+                  <Input id="title" placeholder="Describe your task briefly" className="rounded-xl border-slate-300 text-slate-500 text-sm" required />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="deadline">Deadline (days)</Label>
-                  <div className="relative">
-                    <Input id="deadline" type="number" min="1" placeholder="Days" required />
-                    <Calendar className="absolute right-3 top-2.5 h-4 w-4 text-zinc-500" />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <Label htmlFor="budget" className="text-mobile-form-title ml-2">Price</Label>
+                    <div className="relative">
+                      <Input id="budget" type="number" step="0.001" min="0.001" placeholder="0.001 ETH" className="rounded-xl border-slate-300 text-slate-500 text-sm" required />
+                      <Wallet className="absolute right-3 top-2.5 h-4 w-4 text-slate-500" />
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="category" className="text-mobile-form-title ml-2">Category</Label>
+                    <Select required>
+                      <SelectTrigger id="category" className="rounded-xl border-slate-300 text-slate-500 text-sm">
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="design">Design</SelectItem>
+                        <SelectItem value="development">Development</SelectItem>
+                        <SelectItem value="content">Content</SelectItem>
+                        <SelectItem value="marketing">Marketing</SelectItem>
+                        <SelectItem value="translation">Translation</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="budget">Budget (ETH)</Label>
-                <div className="relative">
-                  <Input id="budget" type="number" step="0.001" min="0.001" placeholder="0.00" required />
-                  <Wallet className="absolute right-3 top-2.5 h-4 w-4 text-zinc-500" />
+                <div className="space-y-1">
+                  <Label htmlFor="description" className="text-mobile-form-title ml-2">Gig Description</Label>
+                  <Textarea
+                      id="description"
+                      placeholder="Describe your task here"
+                      className="rounded-xl border-slate-300 text-slate-500 text-sm"
+                      rows={2}
+                      required
+                  />
                 </div>
-                <p className="text-xs text-zinc-500">This amount will be locked in escrow until task completion</p>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button type="submit" className="w-full bg-emerald-500 hover:bg-emerald-600" disabled={isSubmitting}>
-                {isSubmitting ? "Creating..." : "Create & Fund Gig"}
-              </Button>
-            </CardFooter>
-          </form>
-        </Card>
-      </main>
+
+                <div className="space-y-2">
+                  <Label htmlFor="deadline" className="text-mobile-form-title ml-2">Deadline</Label>
+                  <input type="date" className="h-10 rounded-xl border-slate-300 text-slate-500 w-full border px-3 py-2 text-sm" required />
+                </div>
+              </CardContent>
+              <CardFooter className="flex flex-col space-y-3">
+                <Button type="submit" className="w-full bg-mobile-primary hover:bg-mobile-primary rounded-xl font-semibold text-md" disabled={isSubmitting}>
+                  {isSubmitting ? "Creating..." : "Create Gigs"}
+                </Button>
+                <Button type="submit" className="w-full bg-white text-gray-600 border border-gray-600 hover:bg-mobile-primary rounded-xl font-semibold text-md" disabled={isSubmitting}>
+                  {isSubmitting ? "Saving..." : "Save for later"}
+                </Button>
+              </CardFooter>
+            </form>
+          </Card>
+        </main>
+      </MobileNavLayout>
     </div>
   )
 }

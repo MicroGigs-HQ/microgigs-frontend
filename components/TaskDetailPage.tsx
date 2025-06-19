@@ -176,13 +176,6 @@ export default function TaskDetailPage({ taskId }: TaskDetailPageProps) {
                   }`}
                 >
                   {!isConnected ? "Connect Wallet to Apply" : isPendingTask || isConfirmingTask ? "Applying..." : isSuccessTask ? "Applied Successfully ✓" : "Apply For This Gig"}
-                  {/* {hasApplied
-                    ? "Applied Successfully ✓"
-                    : isApplying
-                    ? "Applying..."
-                    : !isConnected
-                    ? "Connect Wallet to Apply"
-                    : "Apply For This Gig"} */}
                 </button>
                 )}
 
@@ -196,13 +189,6 @@ export default function TaskDetailPage({ taskId }: TaskDetailPageProps) {
                   }`}
                 >
                   {isSubmittingTask ? "Submitting..." : isSuccessTask ? "Submitted Successfully ✓" : "Submit Work"}
-                  {/* {hasApplied
-                    ? "Applied Successfully ✓"
-                    : isApplying
-                    ? "Applying..."
-                    : !isConnected
-                    ? "Connect Wallet to Apply"
-                    : "Apply For This Gig"} */}
                 </button>
                 )}
 

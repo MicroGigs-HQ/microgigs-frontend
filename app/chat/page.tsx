@@ -139,7 +139,7 @@ export default function ChatPage() {
             {chats.map((chat, index) => (
               <div key={index} className="flex gap-2 items-center">
                 <div className="w-[80px] h-[48px] overflow-hidden rounded-xl relative">
-                  <Image src="/og.png" alt="" fill />
+                  <Image src="/user.png" alt="" fill />
                 </div>
 
                 <div className="flex flex-col">

@@ -145,9 +145,9 @@ export default function SimpleConnectScreen() {
 
   console.log(selectedCategory, filteredTasks)
 
-  const navigateToProfile = () => {
-    router.push("/profile")
-  }
+  // const navigateToProfile = () => {
+  //   router.push("/profile")
+  // }
 
   useEffect(() => {
     const search = window.location.search

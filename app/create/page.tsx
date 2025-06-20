@@ -250,7 +250,6 @@ export default function CreateGig() {
                   <div className="space-y-1">
                     <Label htmlFor="title" className="text-mobile-form-title ml-2">Task Title</Label>
                     <Input
-                        name="title"
                         placeholder="Describe your task briefly"
                         className="rounded-xl border-slate-300 text-slate-500 text-sm"
                         {...register("title", {
@@ -275,7 +274,6 @@ export default function CreateGig() {
                       <div className="relative">
                         <Input
                             id="budget"
-                            name="price"
                             type="number"
                             step="0.001"
                             min="0.001"
@@ -336,7 +334,6 @@ export default function CreateGig() {
                     <Label htmlFor="description" className="text-mobile-form-title ml-2">Gig Description</Label>
                     <Textarea
                         id="description"
-                        name="description"
                         placeholder="Describe your task here"
                         className="rounded-xl border-slate-300 text-slate-500 text-sm"
                         rows={2}
@@ -361,7 +358,6 @@ export default function CreateGig() {
                     <Input
                         id="deadline"
                         type="number"
-                        name="deadline"
                         min="1"
                         placeholder="e.g., 7"
                         className="rounded-xl border-slate-300 text-slate-500 text-sm"

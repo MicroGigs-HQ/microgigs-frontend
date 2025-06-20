@@ -70,5 +70,7 @@ export function useCreateTask(factoryAddress: Address, userAddress: Address) {
     isConfirmingCreate: isConfirming,
     isSuccessCreate: isSuccess,
     txHash: hash,
+    createError: receiptError,
+    isErrorCreate: isError
   };
 }

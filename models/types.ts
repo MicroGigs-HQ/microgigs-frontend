@@ -13,7 +13,7 @@ export interface Task {
 }
 
 export interface CreateGigData {
-  taskTitle: string;
+  title: string;
   price: string;
   category: string;
   description: string;

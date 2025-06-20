@@ -20,6 +20,7 @@ import {useForm, Controller} from "react-hook-form";
 import {toast} from "react-hot-toast";
 import {CreateGigData} from "@/models/types";
 import GigSuccessModal from "@/components/ui/GigSuccessModal";
+import {router} from "next/client";
 
 export default function CreateGig() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -186,6 +187,7 @@ export default function CreateGig() {
   const handleViewGig = () => {
     console.log("View gig clicked");
     setShowSuccessModal(false);
+    // router.push(`/gig/${}`);
     toast.success("Redirecting to view your gig...");
   };
 

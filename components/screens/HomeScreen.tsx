@@ -3,13 +3,19 @@
 import { useState, useEffect } from "react"
 import { useAccount } from "wagmi"
 import { useMiniKit } from "@coinbase/onchainkit/minikit"
-import { ConnectWallet, Wallet } from "@coinbase/onchainkit/wallet"
+import { ConnectWallet, Wallet, WalletDropdown, WalletDropdownDisconnect } from "@coinbase/onchainkit/wallet"
+import {
+  Name,
+  Identity,
+  Address,
+  Avatar,
+  EthBalance,
+} from "@coinbase/onchainkit/identity";
 import { Search } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import abstract from "../../public/waving-orange.png"
 import logo from "../../public/microgigs-logo.svg"
-import usdc from "../../public/USDC.svg"
 import eth from "../../public/ETH.png";
 import type { Task } from "@/models/types"
 import { useAllTasks } from "@/hooks/useGetAllTasks"
@@ -221,6 +227,22 @@ export default function SimpleConnectScreen() {
               </div>
             ) : (
               <div className="flex items-center gap-3">
+                <Wallet className="z-10">
+                  <ConnectWallet>
+                    <div className="bg-gradient-to-r from-[#FF3C02] to-[#FF6D47] text-white py-3 px-6 rounded-lg font-medium hover:shadow-lg transition-all duration-200">
+                      <Name className="text-inherit" />
+                    </div>
+                  </ConnectWallet>
+                  <WalletDropdown>
+                    <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
+                      <Avatar />
+                      <Name />
+                      <Address />
+                      <EthBalance />
+                    </Identity>
+                    <WalletDropdownDisconnect />
+                  </WalletDropdown>
+                </Wallet>
                 {/* Profile picture - now clickable */}
                 <div
                   className="w-8 h-8 rounded-full overflow-hidden bg-red-500 flex items-center justify-center cursor-pointer hover:bg-red-600 transition-colors"
@@ -341,7 +363,7 @@ export default function SimpleConnectScreen() {
                       <div
                         key={task.taskAddress}
                         className="flex items-start gap-3 p-0 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors"
-                        onClick={() => setSelectedTask((task as any))}
+                        onClick={() => router.push(`/gig/${task.taskAddress}`)}
                       >
                         {/* Task Image */}
                         <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">

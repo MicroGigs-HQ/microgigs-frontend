@@ -12,6 +12,14 @@ export interface Task {
   posterRating?: number;
 }
 
+export interface CreateGigData {
+  taskTitle: string;
+  price: string;
+  category: string;
+  description: string;
+  deadline: string;
+}
+
 export interface TaskDetailPageProps {
   taskId?: string
 }

@@ -140,6 +140,7 @@ export default function SimpleConnectScreen() {
   const { tasks, loading, error, refreshAllTasks } = useAllTasks(
     process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
   )
+  
   const filteredTasks = selectedCategory === "all" ? tasks : tasks.filter((task) => task.category === selectedCategory)
 
   console.log(selectedCategory, filteredTasks)
@@ -228,10 +229,19 @@ export default function SimpleConnectScreen() {
             ) : (
               <div className="flex items-center gap-3">
                 <Wallet className="z-10">
-                  <ConnectWallet>
-                    <div className="bg-gradient-to-r from-[#FF3C02] to-[#FF6D47] text-white py-3 px-6 rounded-lg font-medium hover:shadow-lg transition-all duration-200">
-                      <Name className="text-inherit" />
-                    </div>
+                  <ConnectWallet className="bg-gradient-to-r from-[#FF3C02] to-[#FF6D47] text-white py-3 px-6 rounded-lg font-medium hover:shadow-lg transition-all duration-200">
+                      <div
+                  className="w-8 h-8 rounded-full overflow-hidden bg-white flex items-center justify-center cursor-pointer hover:bg-red-600 transition-colors"
+                  title="Go to Profile"
+                >
+                  <span className="text-black text-sm font-medium">{username.charAt(0).toUpperCase() || "G"}</span>
+                </div>
+
+                {/* Username and address */}
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium text-white">{`Gm, ${username}` || "Gm, Weng"}</span>
+                  <span className="text-xs text-white">{truncateAddress(address)}</span>
+                </div>
                   </ConnectWallet>
                   <WalletDropdown>
                     <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
@@ -244,19 +254,19 @@ export default function SimpleConnectScreen() {
                   </WalletDropdown>
                 </Wallet>
                 {/* Profile picture - now clickable */}
-                <div
+                {/* <div
                   className="w-8 h-8 rounded-full overflow-hidden bg-red-500 flex items-center justify-center cursor-pointer hover:bg-red-600 transition-colors"
                   onClick={navigateToProfile}
                   title="Go to Profile"
                 >
                   <span className="text-white text-sm font-medium">{username.charAt(0).toUpperCase() || "G"}</span>
-                </div>
+                </div>/*}
 
                 {/* Username and address */}
-                <div className="flex flex-col">
+                {/* <div className="flex flex-col">
                   <span className="text-sm font-medium text-gray-900">{`Gm, ${username}` || "Gm, Weng"}</span>
                   <span className="text-xs text-gray-500">{truncateAddress(address)}</span>
-                </div>
+                </div> */}
               </div>
             )}
           </div>

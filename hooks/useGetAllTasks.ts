@@ -3,6 +3,7 @@ import { usePublicClient, useReadContract } from 'wagmi'
 import { Address } from 'viem'
 import TaskFactoryABI from '@/lib/abis/TaskFactory.json'
 import TaskEscrowABI from '@/lib/abis/TaskEscrow.json'
+import { daysFromNow } from '@/lib/utils'
 
 export interface Task {
   taskAddress: Address
@@ -67,7 +68,9 @@ export function useAllTasks(factoryAddress: Address) {
           })
         )
 
-        setTasks(detailedTasks as Task[])
+        const allTasks = detailedTasks.filter((task) => daysFromNow(task.deadline) > 0);
+
+        setTasks(allTasks as Task[])
         setError(null)
       } catch (err) {
         console.error(err)

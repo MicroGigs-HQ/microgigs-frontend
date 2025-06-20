@@ -14,8 +14,8 @@ export function Providers(props: { children: ReactNode }) {
       chain={baseSepolia}
       config={{
         appearance: {
-          mode: "auto",
-          theme: "snake",
+          mode: "dark",
+          theme: "mini-app-theme",
           name: process.env.NEXT_PUBLIC_ONCHAINKIT_PROJECT_NAME,
           logo: process.env.NEXT_PUBLIC_ICON_URL,
         },

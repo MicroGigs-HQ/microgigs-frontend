@@ -33,6 +33,8 @@ import {
 import { useCreateTask } from "@/hooks/useCreateTask";
 import GigSuccessModal from "./GigSuccessModal";
 import MobileHeader from "@/components/ui/MobileHeader";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 interface CreateTaskFormData {
   taskTitle: string;
@@ -49,6 +51,8 @@ const CreateTask: React.FC = () => {
   const [lastTransactionHash, setLastTransactionHash] = useState<string | null>(
     null
   );
+  const [deadlineDate, setDeadlineDate] = useState<Date | null>(null);
+  const [showBottomNav, setShowBottomNav] = useState(true);
 
   const { setFrameReady, isFrameReady, context } = useMiniKit();
   const addFrame = useAddFrame();
@@ -153,6 +157,16 @@ const CreateTask: React.FC = () => {
       }
     };
   }, [isSubmitting, isPendingCreate, isConfirmingCreate, isSuccessCreate]);
+
+  useEffect(() => {
+    // Hide bottom nav on desktop or when modal is open
+    const handleResize = () => {
+      setShowBottomNav(window.innerWidth < 768 && !showSuccessModal);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [showSuccessModal]);
 
   const onSubmit = async (data: CreateTaskFormData) => {
     if (!isConnected || !address) {
@@ -270,6 +284,7 @@ const CreateTask: React.FC = () => {
   }
 
   const isProcessing = isPendingCreate || isConfirmingCreate || isSubmitting;
+  const descriptionValue = watch("gigDescription") || "";
 
   return (
     <>
@@ -344,10 +359,7 @@ const CreateTask: React.FC = () => {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               {/* Task Title */}
               <div>
-                <label
-                  htmlFor="taskTitle"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
+                <label htmlFor="taskTitle" className="block text-sm font-semibold text-gray-900 mb-2">
                   Task Title
                 </label>
                 <input
@@ -360,59 +372,45 @@ const CreateTask: React.FC = () => {
                       message: "Task title must be at least 3 characters",
                     },
                   })}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  placeholder="Enter task title"
+                  className={`w-full px-3 py-3 border ${errors.taskTitle ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent`}
+                  placeholder="Enter a title for the gig"
                   disabled={isProcessing}
                 />
                 {errors.taskTitle && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.taskTitle.message}
-                  </p>
+                  <p className="mt-1 text-sm text-red-600">{errors.taskTitle.message}</p>
                 )}
               </div>
-
               {/* Price and Category Row */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label
-                    htmlFor="price"
-                    className="block text-sm font-medium text-gray-700 mb-2"
-                  >
-                    Price (ETH)
+                  <label htmlFor="price" className="block text-sm font-semibold text-gray-900 mb-2">
+                    Price
                   </label>
                   <input
                     id="price"
-                    type="text"
+                    type="number"
+                    step="0.01"
+                    min="0.01"
                     {...register("price", {
                       required: "Price is required",
-                      pattern: {
-                        value: /^[0-9]*\.?[0-9]+$/,
-                        message: "Please enter a valid number",
-                      },
+                      min: { value: 0.01, message: "Minimum price is 0.01 ETH" },
                     })}
-                    className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                    placeholder="0.01"
+                    className={`w-full px-3 py-3 border ${errors.price ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent`}
+                    placeholder="0.01 ETH"
                     disabled={isProcessing}
                   />
                   {errors.price && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.price.message}
-                    </p>
+                    <p className="mt-1 text-sm text-red-600">{errors.price.message}</p>
                   )}
                 </div>
                 <div>
-                  <label
-                    htmlFor="category"
-                    className="block text-sm font-medium text-gray-700 mb-2"
-                  >
+                  <label htmlFor="category" className="block text-sm font-semibold text-gray-900 mb-2">
                     Category
                   </label>
                   <select
                     id="category"
-                    {...register("category", {
-                      required: "Category is required",
-                    })}
-                    className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none bg-white"
+                    {...register("category", { required: "Category is required" })}
+                    className={`w-full px-3 py-3 border ${errors.category ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none bg-white`}
                     disabled={isProcessing}
                   >
                     <option value="">Select category</option>
@@ -423,19 +421,13 @@ const CreateTask: React.FC = () => {
                     <option value="other">Other</option>
                   </select>
                   {errors.category && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.category.message}
-                    </p>
+                    <p className="mt-1 text-sm text-red-600">{errors.category.message}</p>
                   )}
                 </div>
               </div>
-
               {/* Gig Description */}
-              <div>
-                <label
-                  htmlFor="gigDescription"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
+              <div className="relative">
+                <label htmlFor="gigDescription" className="block text-sm font-semibold text-gray-900 mb-2">
                   Gig Description
                 </label>
                 <textarea
@@ -448,46 +440,37 @@ const CreateTask: React.FC = () => {
                     },
                   })}
                   rows={6}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
-                  placeholder="Describe your gig in detail..."
+                  className={`w-full px-3 py-3 border ${errors.gigDescription ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none`}
+                  placeholder="Describe your task here"
                   disabled={isProcessing}
                 />
+                <span className="absolute bottom-2 right-3 text-xs text-gray-400">{descriptionValue.length}/500</span>
                 {errors.gigDescription && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.gigDescription.message}
-                  </p>
+                  <p className="mt-1 text-sm text-red-600">{errors.gigDescription.message}</p>
                 )}
               </div>
-
               {/* Deadline */}
               <div>
-                <label
-                  htmlFor="deadline"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  Deadline (in days)
+                <label htmlFor="deadline" className="block text-sm font-semibold text-gray-900 mb-2">
+                  Deadline
                 </label>
-                <input
+                <DatePicker
                   id="deadline"
-                  type="text"
-                  {...register("deadline", {
-                    required: "Deadline is required",
-                    pattern: {
-                      value: /^[0-9]+$/,
-                      message: "Please enter a valid number of days",
-                    },
-                  })}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  placeholder="e.g., 7"
+                  selected={deadlineDate}
+                  onChange={(date) => {
+                    setDeadlineDate(date);
+                    reset({ ...watch(), deadline: date ? date.toISOString() : "" });
+                  }}
+                  minDate={new Date()}
+                  placeholderText="Enter date"
+                  className={`w-full px-3 py-3 border ${errors.deadline ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent`}
                   disabled={isProcessing}
+                  dateFormat="yyyy-MM-dd"
                 />
                 {errors.deadline && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.deadline.message}
-                  </p>
+                  <p className="mt-1 text-sm text-red-600">{errors.deadline.message}</p>
                 )}
               </div>
-
               {/* Action Buttons */}
               <div className="space-y-3 pt-6">
                 <button
@@ -501,7 +484,7 @@ const CreateTask: React.FC = () => {
                       ? "Confirming Transaction..."
                       : isSubmitting
                         ? "Creating Task..."
-                        : "Create & Fund Gig"}
+                        : "Create Gigs"}
                 </button>
                 <button
                   type="button"
@@ -512,7 +495,6 @@ const CreateTask: React.FC = () => {
                   Save for later
                 </button>
               </div>
-
               {/* Transaction Status */}
               {isProcessing && (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -520,18 +502,12 @@ const CreateTask: React.FC = () => {
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500 mr-3"></div>
                     <div>
                       <p className="text-sm font-medium text-blue-800">
-                        {isPendingCreate &&
-                          "Please confirm the transaction in your wallet..."}
-                        {isConfirmingCreate &&
-                          "Transaction is being confirmed on the blockchain..."}
-                        {isSubmitting &&
-                          !isPendingCreate &&
-                          !isConfirmingCreate &&
-                          "Processing your request..."}
+                        {isPendingCreate && "Please confirm the transaction in your wallet..."}
+                        {isConfirmingCreate && "Transaction is being confirmed on the blockchain..."}
+                        {isSubmitting && !isPendingCreate && !isConfirmingCreate && "Processing your request..."}
                       </p>
                       <p className="text-xs text-blue-600 mt-1">
-                        This may take a few moments. Please don't close this
-                        page.
+                        This may take a few moments. Please don't close this page.
                       </p>
                     </div>
                   </div>
@@ -555,34 +531,36 @@ const CreateTask: React.FC = () => {
         </div>
 
         {/* Bottom Navigation */}
-        <div className="bg-white border-t border-gray-200 px-4 py-3">
-          <div className="flex items-center justify-between">
-            <button className="flex flex-col items-center space-y-1 p-2">
-              <Home className="w-5 h-5 text-gray-400" />
-              <span className="text-xs text-gray-400">Home</span>
-            </button>
-            <button className="flex flex-col items-center space-y-1 p-2">
-              <Bell className="w-5 h-5 text-gray-400" />
-              <span className="text-xs text-gray-400">Notification</span>
-            </button>
-            <button className="flex flex-col items-center space-y-1 p-2">
-              <div className="w-5 h-5 bg-[#FF3C02] rounded-full flex items-center justify-center">
-                <Plus className="w-3 h-3 text-white" />
-              </div>
-              <span className="text-xs text-[#FF3C02] font-medium">
-                Create Task
-              </span>
-            </button>
-            <button className="flex flex-col items-center space-y-1 p-2">
-              <MessageCircle className="w-5 h-5 text-gray-400" />
-              <span className="text-xs text-gray-400">Chat</span>
-            </button>
-            <button className="flex flex-col items-center space-y-1 p-2">
-              <MoreHorizontal className="w-5 h-5 text-gray-400" />
-              <span className="text-xs text-gray-400">More</span>
-            </button>
+        {showBottomNav && (
+          <div className="bg-white border-t border-gray-200 px-4 py-3 md:hidden">
+            <div className="flex items-center justify-between">
+              <button className="flex flex-col items-center space-y-1 p-2">
+                <Home className="w-5 h-5 text-gray-400" />
+                <span className="text-xs text-gray-400">Home</span>
+              </button>
+              <button className="flex flex-col items-center space-y-1 p-2">
+                <Bell className="w-5 h-5 text-gray-400" />
+                <span className="text-xs text-gray-400">Notification</span>
+              </button>
+              <button className="flex flex-col items-center space-y-1 p-2">
+                <div className="w-5 h-5 bg-[#FF3C02] rounded-full flex items-center justify-center">
+                  <Plus className="w-3 h-3 text-white" />
+                </div>
+                <span className="text-xs text-[#FF3C02] font-medium">
+                  Create Task
+                </span>
+              </button>
+              <button className="flex flex-col items-center space-y-1 p-2">
+                <MessageCircle className="w-5 h-5 text-gray-400" />
+                <span className="text-xs text-gray-400">Chat</span>
+              </button>
+              <button className="flex flex-col items-center space-y-1 p-2">
+                <MoreHorizontal className="w-5 h-5 text-gray-400" />
+                <span className="text-xs text-gray-400">More</span>
+              </button>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Success Modal */}
         <GigSuccessModal

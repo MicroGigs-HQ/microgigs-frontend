@@ -14,7 +14,6 @@ import {
 import { Search } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import abstract from "../../public/waving-orange.png"
 import logo from "../../public/microgigs-logo.svg"
 import eth from "../../public/ETH.png";
 import type { Task } from "@/models/types"
@@ -22,6 +21,7 @@ import { useAllTasks } from "@/hooks/useGetAllTasks"
 import { taskStatus, truncateAddress, daysFromNow } from "@/lib/utils"
 import { MobileNavLayout } from "../layout/MobileNavLayout"
 import SearchBar from "@/components/ui/search-bar";
+import WelcomeModal from "../modals/WelcomeModal"
 
 const categories = [
   { id: "all", name: "All" },
@@ -32,102 +32,11 @@ const categories = [
   { id: "other", name: "Other" },
 ]
 
-interface UsernameModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onSave: () => void
-  username: string
-  setUsername: (username: string) => void
-}
-
-const UsernameModal = ({ isOpen, onClose, onSave, username, setUsername }: UsernameModalProps) => {
-  if (!isOpen) return null
-
-  const handleSave = () => {
-    if (!username.trim()) {
-      alert("Please enter a username")
-      return
-    }
-    localStorage.setItem("microgigs_username", username)
-    onSave()
-    onClose()
-  }
-
-  return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-xl overflow-hidden">
-        {/* Close button */}
-        <div className="absolute top-4 right-4 z-10">
-          <button
-            onClick={onClose}
-            className="w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors"
-          >
-            <span className="text-gray-600 text-lg">×</span>
-          </button>
-        </div>
-
-        {/* Hero Image */}
-        <div className="relative h-48 overflow-hidden">
-          <Image src={abstract || "/placeholder.svg"} alt="Abstract illustration" fill className="object-cover" />
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-            <div className="w-2 h-2 bg-white rounded-full"></div>
-            <div className="w-2 h-2 bg-white/50 rounded-full"></div>
-            <div className="w-2 h-2 bg-white/50 rounded-full"></div>
-          </div>
-        </div>
-
-        {/* Modal content */}
-        <div className="p-6">
-          <div className="text-center mb-6">
-            <h3 className="text-md font-bold text-gray-900 mb-2">Welcome to MicroGigs</h3>
-            <p className="text-sm text-gray-500">Turn your skills into rewards and join a thriving community</p>
-          </div>
-
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-3">Pick A Username</label>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Pick a really cool Name..."
-              className="w-full px-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 text-gray-700 placeholder-gray-400"
-            />
-          </div>
-
-          <button
-            onClick={handleSave}
-            disabled={!username.trim()}
-            className={`w-full font-semibold py-4 px-4 rounded-xl transition-colors text-base ${
-              !username.trim()
-                ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-                : "bg-orange-500 hover:bg-orange-600 text-white cursor-pointer"
-            }`}
-          >
-            Continue to Wallet Connection
-          </button>
-
-          <div className="text-center mt-6 space-y-2">
-            <p className="text-xs text-gray-500">
-              By using MicroGigs, you accept our <span className="text-blue-600 underline">Terms of Use</span> and{" "}
-              <span className="text-blue-600 underline">Privacy Policy</span>, ensuring a safe and transparent
-              experience.
-            </p>
-
-            <p className="text-xs text-gray-500 mt-4">
-              Talk to the team at <span className="text-blue-600 underline">support@microgigs.com</span>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
 export default function SimpleConnectScreen() {
   const router = useRouter()
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
-  const [showUsernameModal, setShowUsernameModal] = useState(false)
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false)
   const [username, setUsername] = useState("")
   const [isFarcasterFrame, setIsFarcasterFrame] = useState(false)
   const [isEmbedded, setIsEmbedded] = useState(false)
@@ -180,9 +89,9 @@ export default function SimpleConnectScreen() {
     }
   }, [isConnected, address, hasUsername])
 
-  const handleConnectClick = () => {
+  const handleGetStartedClick = () => {
     if (!hasUsername) {
-      setShowUsernameModal(true)
+      setShowWelcomeModal(true)
     }
   }
 
@@ -213,7 +122,7 @@ export default function SimpleConnectScreen() {
               <div className="flex items-center gap-2">
                 {!hasUsername ? (
                   <button
-                    onClick={handleConnectClick}
+                    onClick={handleGetStartedClick}
                     className="bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium px-4 py-2 rounded-lg transition-colors"
                   >
                     Get Started
@@ -253,20 +162,6 @@ export default function SimpleConnectScreen() {
                     <WalletDropdownDisconnect />
                   </WalletDropdown>
                 </Wallet>
-                {/* Profile picture - now clickable */}
-                {/* <div
-                  className="w-8 h-8 rounded-full overflow-hidden bg-red-500 flex items-center justify-center cursor-pointer hover:bg-red-600 transition-colors"
-                  onClick={navigateToProfile}
-                  title="Go to Profile"
-                >
-                  <span className="text-white text-sm font-medium">{username.charAt(0).toUpperCase() || "G"}</span>
-                </div>/*}
-
-                {/* Username and address */}
-                {/* <div className="flex flex-col">
-                  <span className="text-sm font-medium text-gray-900">{`Gm, ${username}` || "Gm, Weng"}</span>
-                  <span className="text-xs text-gray-500">{truncateAddress(address)}</span>
-                </div> */}
               </div>
             )}
           </div>
@@ -342,7 +237,6 @@ export default function SimpleConnectScreen() {
             </div>
           )}
 
-          {/* Task List - Empty state */}
           {/* Task List */}
           <div className="space-y-4 pb-24">
             {loading ? (
@@ -436,10 +330,10 @@ export default function SimpleConnectScreen() {
           </div>
         </div>
 
-        {/* Username Modal */}
-        <UsernameModal
-          isOpen={showUsernameModal}
-          onClose={() => setShowUsernameModal(false)}
+        {/* Welcome Modal */}
+        <WelcomeModal
+          isOpen={showWelcomeModal}
+          onClose={() => setShowWelcomeModal(false)}
           onSave={handleUsernameSaved}
           username={username}
           setUsername={setUsername}

@@ -113,7 +113,7 @@ const UsernameModal = ({ isOpen, onClose, onSave, username, setUsername }: Usern
             
             <p className="text-xs text-gray-500 mt-4">
               Talk to the team at{' '}
-              <span className="text-blue-600 underline">support@microgigs.com</span>
+              <span className="text-blue-600 underline">support@microgigs.xyz</span>
             </p>
           </div>
         </div>
@@ -133,7 +133,6 @@ export default function SimpleConnectScreen() {
   const { address, isConnected } = useAccount()
   const { setFrameReady, isFrameReady, context } = useMiniKit()
 
-  // Detect if running in Farcaster frame or embedded environment
   useEffect(() => {
     const search = window.location.search
     const isFC = search.includes('fc_user') || search.includes('frame_id')

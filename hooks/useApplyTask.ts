@@ -32,9 +32,11 @@ export function useApplyTaskHook(userAddress?: Address) {
       refreshAllTasks();
       refreshAssignedTasks();
       refreshProfile();
-    } else if (isError && receiptError) {
+    } else if (isError || receiptError) {
+      console.log(isError)
         toast.dismiss(toastIdRef.current);
       toast.error(`Transaction failed: ${receiptError.message}`);
+      toast.dismiss(toastIdRef.current);
     }
   }, [isSuccess, isError, receiptError]);
 
@@ -66,5 +68,6 @@ export function useApplyTaskHook(userAddress?: Address) {
     isPendingTask: isPending,
     isConfirmingTask: isConfirming,
     isSuccessTask: isSuccess,
+    isErrorTask: isError
   };
 }

@@ -77,7 +77,8 @@ const config: Config = {
           'success': '#22c55e',
           'warning': '#f59e0b',
           'error': '#ef4444',
-          'info': '#3b82f6'
+          'info': '#3b82f6',
+          'form-title': '#6F6C8F'
         },
         
         // Ensure orange colors work properly

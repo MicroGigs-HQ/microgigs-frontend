@@ -54,6 +54,7 @@ export function useCreateTask(factoryAddress: Address, userAddress: Address) {
     deadlineInSeconds: number;
   }) => {
     toastIdRef.current = toast.loading("Creating task...");
+
     await writeContract({
       address: factoryAddress,
       abi: TaskFactoryABI,
@@ -69,5 +70,7 @@ export function useCreateTask(factoryAddress: Address, userAddress: Address) {
     isConfirmingCreate: isConfirming,
     isSuccessCreate: isSuccess,
     txHash: hash,
+    createError: receiptError,
+    isErrorCreate: isError
   };
 }

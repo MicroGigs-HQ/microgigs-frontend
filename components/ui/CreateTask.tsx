@@ -564,7 +564,7 @@ const CreateTask: React.FC = () => {
 
         {/* Success Modal */}
         <GigSuccessModal
-          isOpen={showSuccessModal}
+          isOpen={true}
           onClose={handleCloseModal}
           onViewGig={handleViewGig}
           onPostAnother={handlePostAnother}

@@ -112,6 +112,14 @@ const config: Config = {
         }
       },
       
+      // ADD BACKGROUND IMAGE UTILITIES HERE
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(circle, var(--tw-gradient-stops))',
+        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        // Simple single gradients (multi-layer won't work in Tailwind config)
+        'hero-gradient': 'radial-gradient(circle at top right, #FF3C02 0%, rgba(255, 60, 2, 0.4) 30%, transparent 50%), radial-gradient(circle at bottom left, #FF3C02 0%, rgba(255, 60, 2, 0.4) 30%, transparent 50%), #000000',
+      },
+      
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',

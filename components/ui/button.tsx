@@ -18,6 +18,8 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        // New emboss variant with linear gradient
+        emboss: "bg-gradient-to-b from-[#FF6D47] to-[#FF3C02] text-white shadow-lg hover:shadow-xl hover:from-[#FF6D47]/90 hover:to-[#FF3C02]/90 active:shadow-inner active:from-[#FF3C02] active:to-[#FF6D47] transition-all duration-200",
       },
       size: {
         default: "h-10 px-4 py-2",

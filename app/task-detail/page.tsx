@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { ArrowLeft, ExternalLink, X, CheckCircle, Search } from "lucide-react";
-import MobileBottomNav from "@/components/layout/mobile-bottom-nav";
+// import MobileBottomNav from "@/components/layout/MobileNavLayout";
 
 import abstract_waving_orange_fibers from "../../assets/abstract_waving_orange_fibers.svg";
 import Image from "next/image";
@@ -250,7 +250,7 @@ const TaskDetails = () => {
         </div>
       )}
 
-      <MobileBottomNav />
+      {/* <MobileBottomNav /> */}
     </div>
   );
 };

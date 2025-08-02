@@ -1,366 +1,395 @@
 [
-    {
-        "inputs": [],
-        "stateMutability": "nonpayable",
-        "type": "constructor"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "taskAddress",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "creator",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "string",
-                "name": "category",
-                "type": "string"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "reward",
-                "type": "uint256"
-            }
-        ],
-        "name": "TaskCreated",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "user",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "task",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "string",
-                "name": "action",
-                "type": "string"
-            },
-            {
-                "indexed": false,
-                "internalType": "int256",
-                "name": "amount",
-                "type": "int256"
-            }
-        ],
-        "name": "TransactionRecorded",
-        "type": "event"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_taskAddress",
-                "type": "address"
-            }
-        ],
-        "name": "applyForTask",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "string",
-                "name": "_title",
-                "type": "string"
-            },
-            {
-                "internalType": "string",
-                "name": "_description",
-                "type": "string"
-            },
-            {
-                "internalType": "string",
-                "name": "_category",
-                "type": "string"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_deadline",
-                "type": "uint256"
-            }
-        ],
-        "name": "createTask",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "payable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "getAllTasks",
-        "outputs": [
-            {
-                "internalType": "address[]",
-                "name": "",
-                "type": "address[]"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "string",
-                "name": "_category",
-                "type": "string"
-            }
-        ],
-        "name": "getTasksByCategory",
-        "outputs": [
-            {
-                "internalType": "address[]",
-                "name": "",
-                "type": "address[]"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_user",
-                "type": "address"
-            }
-        ],
-        "name": "getUserAssignedTasks",
-        "outputs": [
-            {
-                "internalType": "address[]",
-                "name": "",
-                "type": "address[]"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_user",
-                "type": "address"
-            }
-        ],
-        "name": "getUserPostedTasks",
-        "outputs": [
-            {
-                "internalType": "address[]",
-                "name": "",
-                "type": "address[]"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_user",
-                "type": "address"
-            }
-        ],
-        "name": "getUserProfile",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "memberSince",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "tasksCompleted",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "tasksPosted",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "totalEarned",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "totalSpent",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint8",
-                "name": "averageRating",
-                "type": "uint8"
-            },
-            {
-                "internalType": "uint256",
-                "name": "ratingsCount",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_taskPoster",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "_taskCompleter",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_reward",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint8",
-                "name": "_rating",
-                "type": "uint8"
-            }
-        ],
-        "name": "taskCompleted",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "name": "tasks",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "name": "userAssignedTasks",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "name": "userPostedTasks",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "userRegistry",
-        "outputs": [
-            {
-                "internalType": "contract UserRegistry",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "name": "userTransactionCount",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "stateMutability": "payable",
-        "type": "receive"
-    }
+  {
+    "inputs": [],
+    "name": "CAN_NOT_USE_ADDRESS_ZERO",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "FailedDeployment",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "INSUFFICIENT_BALANCE",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "balance",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "needed",
+        "type": "uint256"
+      }
+    ],
+    "name": "InsufficientBalance",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidInitialization",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotInitializing",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "REWARD_CANNOT_BE_EMPTY",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ReentrancyGuardReentrantCall",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      }
+    ],
+    "name": "SafeERC20FailedOperation",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint64",
+        "name": "version",
+        "type": "uint64"
+      }
+    ],
+    "name": "Initialized",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "taskAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "creator",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "reward",
+        "type": "uint256"
+      }
+    ],
+    "name": "TaskCreated",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_title",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_description",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_category",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "_tokenAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_deadline",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_reward",
+        "type": "uint256"
+      }
+    ],
+    "name": "createTask",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getAllTasks",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_taskAddress",
+        "type": "address"
+      }
+    ],
+    "name": "getTaskDetails",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "taskOwner",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "taskAssignee",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "category",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "tokenAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "reward",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "deadline",
+        "type": "uint256"
+      },
+      {
+        "internalType": "enum TaskEscrow.Status",
+        "name": "status",
+        "type": "uint8"
+      },
+      {
+        "internalType": "bool",
+        "name": "isCompleted",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "isDisputed",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getTaskStatusCounts",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "open",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "assigned",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "completed",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "disputed",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "paidOut",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getTotalTasks",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getUncompletedTasks",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_taskEscrowImpl",
+        "type": "address"
+      }
+    ],
+    "name": "initialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_address",
+        "type": "address"
+      }
+    ],
+    "name": "isTaskContract",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "taskEscrowImplementation",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum TaskEscrow.Status",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "name": "taskStatusCounts",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "tasks",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "userTaskCounts",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
 ]

@@ -18,6 +18,7 @@ import WelcomeModal from "../../components/modals/WelcomeModal"
 import ResponsiveNavbar from "../../components/layout/ResponsiveNavbar"
 import { Button } from "@/components/ui/button"
 import TaskRewardDisplay from "@/components/TaskRewardDisplay"
+import {useGetUncompletedTasks} from "@/hooks/useGetUncompletedTasks";
 
 const categories = [
   { id: "all", name: "All" },
@@ -34,7 +35,7 @@ export default function UnifiedHomePage() {
   const [showWelcomeModal, setShowWelcomeModal] = useState(false)
   const [username, setUsername] = useState("")
   const [hasUsername, setHasUsername] = useState(false)
-  const [activeTab, setActiveTab] = useState<"browse" | "my-tasks" | "tasks-applied">("browse")
+  const [activeTab, setActiveTab] = useState<"browse"| "available-tasks" | "my-tasks" | "tasks-applied">("browse")
   const [mounted, setMounted] = useState(false)
 
   const { address, isConnected } = useAccount()
@@ -45,6 +46,37 @@ export default function UnifiedHomePage() {
   )
 
   const filteredTasks = selectedCategory === "all" ? tasks : tasks.filter((task) => task.category === selectedCategory)
+
+  const {
+    tasks: uncompletedTasks,
+    loading: uncompletedLoading,
+    error: uncompletedError,
+    refresh: refreshUncompleted
+  } = useGetUncompletedTasks(
+      process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+  )
+
+  const getTasksForTab = () => {
+    switch (activeTab) {
+      case "browse":
+        return selectedCategory === "all"
+            ? tasks
+            : tasks.filter(task => task.category === selectedCategory)
+      case "available-tasks":
+        return uncompletedTasks
+      case "my-tasks":
+        return tasks.filter(task => task.owner === address)
+      case "tasks-applied":
+        return tasks.filter(task => task.assignee === address)
+      default:
+        return []
+    }
+  }
+
+  const tasksToShow = getTasksForTab()
+  const isLoadingForTab = activeTab === "available-tasks"
+      ? uncompletedLoading
+      : loading
 
   // Prevent hydration errors by ensuring client-side only rendering
   useEffect(() => {
@@ -60,13 +92,6 @@ export default function UnifiedHomePage() {
     error,
     contractAddress: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS
   })
-
-  console.log("All Tasks:", {tasks})
-
-  // Log first few tasks for debugging
-  if (tasks.length > 0) {
-    console.log("Sample tasks:", tasks.slice(0, 3))
-  }
 
   useEffect(() => {
     if (!isFrameReady) {
@@ -208,6 +233,16 @@ export default function UnifiedHomePage() {
                     Browse
                   </button>
                   <button
+                      onClick={() => setActiveTab("available-tasks")}
+                      className={`text-lg font-medium pb-4 transition-colors ${
+                          activeTab === "available-tasks"
+                              ? "text-orange-500 border-b-2 border-orange-500"
+                              : "text-gray-500 hover:text-gray-700"
+                      }`}
+                  >
+                    Available tasks
+                  </button>
+                  <button
                       onClick={() => setActiveTab("my-tasks")}
                       className={`text-lg font-medium pb-4 transition-colors ${
                           activeTab === "my-tasks"
@@ -250,7 +285,7 @@ export default function UnifiedHomePage() {
 
                 {/* Task Grid */}
                 <div className="grid grid-cols-1 gap-6">
-                  {loading ? (
+                  {loading || isLoadingForTab ? (
                       <div className="text-center py-12">
                         <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center animate-pulse">
                           <Search className="w-8 h-8 text-gray-400" />
@@ -273,21 +308,32 @@ export default function UnifiedHomePage() {
                           Try again
                         </button>
                       </div>
-                  ) : filteredTasks.length === 0 ? (
+                  ) : tasksToShow.length === 0 ? (
                       <div className="text-center py-12">
                         <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
                           <Search className="w-8 h-8 text-gray-400" />
                         </div>
                         <h3 className="text-xl font-medium text-gray-900 mb-2">
-                          {tasks.length === 0 ? "No tasks available" : `No ${selectedCategory} tasks`}
+                          {activeTab === "my-tasks"
+                              ? "No tasks created"
+                              : activeTab === "tasks-applied"
+                                  ? "No tasks applied to"
+                                  : tasks.length === 0
+                                      ? "No tasks available"
+                                      : `No ${selectedCategory} tasks`
+                          }
                         </h3>
                         <p className="text-gray-500">
-                          {tasks.length === 0
-                              ? "Check back later for new opportunities or try refreshing the page."
-                              : `Try selecting "All" or a different category to see more tasks.`
+                          {activeTab === "my-tasks"
+                              ? "You haven't created any tasks yet. Start by posting a new task."
+                              : activeTab === "tasks-applied"
+                                  ? "You haven't applied to any tasks yet. Browse available tasks to get started."
+                                  : tasks.length === 0
+                                      ? "Check back later for new opportunities or try refreshing the page."
+                                      : `Try selecting "All" or a different category to see more tasks.`
                           }
                         </p>
-                        {tasks.length > 0 && selectedCategory !== "all" && (
+                        {activeTab === "browse" && tasks.length > 0 && selectedCategory !== "all" && (
                             <button
                                 onClick={() => setSelectedCategory("all")}
                                 className="mt-4 text-orange-500 hover:text-orange-600 font-medium"
@@ -295,9 +341,20 @@ export default function UnifiedHomePage() {
                               Show all tasks
                             </button>
                         )}
+                        {activeTab === "my-tasks" && (
+                            <button
+                                onClick={() => router.push("/create-task")} // Adjust this route as needed
+                                className="mt-4 px-6 py-3 rounded-xl text-white font-medium shadow-lg hover:shadow-xl active:shadow-inner transition-all duration-200"
+                                style={{
+                                  background: 'linear-gradient(to bottom, #FF6D47, #FF3C02)'
+                                }}
+                            >
+                              Create Your First Task
+                            </button>
+                        )}
                       </div>
                   ) : (
-                      filteredTasks.map((task) => {
+                      tasksToShow.map((task) => {
                         // Debug each task
                         console.log("Rendering task:", {
                           id: task.taskAddress,
@@ -345,7 +402,7 @@ export default function UnifiedHomePage() {
                                   <span className="text-xs text-gray-500">Category: {task.category || "other"}</span>
                                 </div>
 
-                                <TaskRewardDisplay task={task} daysFromNow={daysFromNow} />
+                                <TaskRewardDisplay task={task}  />
                               </div>
                             </div>
                         )
@@ -557,6 +614,16 @@ export default function UnifiedHomePage() {
                 Browse
               </button>
               <button
+                  onClick={() => setActiveTab("available-tasks")}
+                  className={`text-sm font-medium pb-2 transition-colors ${
+                      activeTab === "available-tasks"
+                          ? "text-orange-500 border-b-2 border-orange-500"
+                          : "text-gray-500 hover:text-gray-700"
+                  }`}
+              >
+                Available Tasks
+              </button>
+              <button
                   onClick={() => setActiveTab("my-tasks")}
                   className={`text-sm font-medium pb-2 transition-colors ${
                       activeTab === "my-tasks"
@@ -606,7 +673,7 @@ export default function UnifiedHomePage() {
                     </div>
                     <p className="text-gray-500 text-sm">Loading opportunities...</p>
                   </div>
-              ) : filteredTasks.length === 0 ? (
+              ) : tasksToShow.length === 0 ? (
                   <div className="text-center py-12">
                     <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
                       <Search className="w-8 h-8 text-gray-400" />
@@ -618,7 +685,7 @@ export default function UnifiedHomePage() {
                   </div>
               ) : (
                   <>
-                    {filteredTasks.slice(0, 10).map((task) => (
+                    {tasksToShow.slice(0, 10).map((task) => (
                         <div
                             key={task.taskAddress}
                             className="flex items-start gap-3 p-0 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors"
@@ -662,7 +729,7 @@ export default function UnifiedHomePage() {
                             <div className="flex items-center justify-between">
                               <TaskRewardDisplay
                                   task={task}
-                                  daysFromNow={daysFromNow}
+
                                   compact={true}
                               />
                             </div>

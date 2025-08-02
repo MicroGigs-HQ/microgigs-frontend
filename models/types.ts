@@ -4,12 +4,15 @@ export interface Task {
   poster?: string;
   title: string;
   description: string;
-  reward: number;
+  reward: number | bigint;
   category: string;
-  deadline: string;
+  deadline: number | bigint |string;
   status: string;
   submissionDetails?: string;
   posterRating?: number;
+  tokenAddress: string;
+  completed: boolean;
+  disputed: boolean;
 }
 
 export interface CreateGigData {

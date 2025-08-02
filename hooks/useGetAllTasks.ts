@@ -7,15 +7,17 @@ import { daysFromNow } from '@/lib/utils'
 
 export interface Task {
   taskAddress: Address
-  poster: Address
-  completer: Address
+  owner: Address
+  assignee: Address
   reward: bigint
   deadline: bigint
   title: string
   description: string
   status: number
-  category?: string
-  submissionDetails?: string
+  category: string
+  tokenAddress: Address
+  completed: boolean
+  disputed: boolean
 }
 
 export function useAllTasks(factoryAddress: Address) {
@@ -42,33 +44,47 @@ export function useAllTasks(factoryAddress: Address) {
 
       try {
         const detailedTasks = await Promise.all(
-          fetchedTasks.map(async ({ taskAddress }) => {
-            const [title, poster, completer, reward, deadline, description, status, category] = await Promise.all([
-              publicClient.readContract({ address: taskAddress, abi: TaskEscrowABI, functionName: 'title' }),
-              publicClient.readContract({ address: taskAddress, abi: TaskEscrowABI, functionName: 'taskPoster' }),
-              publicClient.readContract({ address: taskAddress, abi: TaskEscrowABI, functionName: 'taskCompleter' }),
-              publicClient.readContract({ address: taskAddress, abi: TaskEscrowABI, functionName: 'reward' }),
-              publicClient.readContract({ address: taskAddress, abi: TaskEscrowABI, functionName: 'deadline' }),
-              publicClient.readContract({ address: taskAddress, abi: TaskEscrowABI, functionName: 'description' }),
-              publicClient.readContract({ address: taskAddress, abi: TaskEscrowABI, functionName: 'status' }),
-              publicClient.readContract({ address: taskAddress, abi: TaskEscrowABI, functionName: 'category' }),
-            ])
+            fetchedTasks.map(async ({ taskAddress }) => {
 
-            return {
-              taskAddress,
-              title,
-              poster,
-              completer,
-              reward,
-              deadline,
-              description,
-              status,
-              category,
-            }
-          })
+              const taskInfo = await publicClient.readContract({
+                address: taskAddress,
+                abi: TaskEscrowABI,
+                functionName: 'getTaskInfo'
+              })
+
+              const [
+                owner,
+                assignee,
+                title,
+                description,
+                category,
+                tokenAddress,
+                reward,
+                deadline,
+                status,
+                completed,
+                disputed
+              ] = taskInfo as [Address, Address, string, string, string, Address, bigint, bigint, number, boolean, boolean]
+
+              return {
+                taskAddress,
+                owner,
+                assignee,
+                title,
+                description,
+                category,
+                tokenAddress,
+                reward,
+                deadline,
+                status,
+                completed,
+                disputed,
+              }
+            })
         )
 
-        const allTasks = detailedTasks.filter((task) => daysFromNow(task.deadline) > 0);
+        // Filter tasks that haven't expired
+        const allTasks = detailedTasks.filter((task) => daysFromNow(task.deadline) > 0)
 
         setTasks(allTasks as Task[])
         setError(null)

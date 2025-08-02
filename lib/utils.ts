@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import {SUPPORTED_TOKENS, SupportedTokenSymbol} from "@/lib/config/supported_tokens";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -86,4 +87,19 @@ export function taskStatusBgColor(status: number) {
 export function truncateAddress(address: string | undefined): string {
   if (!address) return ""
   return `${address.slice(0, 6)}...${address.slice(-4)}`
+}
+
+export function findTokenByAddress(tokenAddress: string, chainId: number) {
+  const normalizedAddress = tokenAddress.toLowerCase();
+
+  for (const [symbol, tokenConfig] of Object.entries(SUPPORTED_TOKENS)) {
+    const addressForChain = tokenConfig.addresses[chainId as keyof typeof tokenConfig.addresses];
+    if (addressForChain && addressForChain.toLowerCase() === normalizedAddress) {
+      return {
+        ...tokenConfig
+      };
+    }
+  }
+
+  return null;
 }

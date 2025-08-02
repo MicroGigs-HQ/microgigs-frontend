@@ -16,6 +16,7 @@ import { useApplyTaskHook } from "@/hooks/useApplyTask"
 import toast from "react-hot-toast"
 import { useSubmitWorkHook } from "@/hooks/useSubmitWork"
 import SubmitTaskModal from "./modals/SubmitTaskModal"
+import TaskRewardDisplay from "@/components/TaskRewardDisplay";
 
 export default function TaskDetailPage({ taskId }: TaskDetailPageProps) {
   const router = useRouter()
@@ -151,10 +152,9 @@ export default function TaskDetailPage({ taskId }: TaskDetailPageProps) {
               {/* Price */}
               <div className="mb-6">
                 <h3 className="text-sm font-medium text-gray-500 mb-2">Reward</h3>
-                <div className="flex items-center gap-2">
-                  <Image src={eth} alt="ETH" width={20} height={20} className="w-5 h-5" />
-                  <span className="text-lg font-bold text-gray-600">{Number(task.reward) / 1e18}</span>
-                  <span className="text-sm text-gray-500">ETH</span>
+
+                <div className="flex items-start">
+                  <TaskRewardDisplay task={task} />
                 </div>
               </div>
 

@@ -17,27 +17,41 @@ export function useGetTask(taskAddress: Address) {
     setError(null)
 
     try {
-      const [title, poster, completer, reward, deadline, description, status, category] = await Promise.all([
-        publicClient.readContract({ address: taskAddress, abi: TaskEscrowABI, functionName: 'title' }),
-        publicClient.readContract({ address: taskAddress, abi: TaskEscrowABI, functionName: 'taskPoster' }),
-        publicClient.readContract({ address: taskAddress, abi: TaskEscrowABI, functionName: 'taskCompleter' }),
-        publicClient.readContract({ address: taskAddress, abi: TaskEscrowABI, functionName: 'reward' }),
-        publicClient.readContract({ address: taskAddress, abi: TaskEscrowABI, functionName: 'deadline' }),
-        publicClient.readContract({ address: taskAddress, abi: TaskEscrowABI, functionName: 'description' }),
-        publicClient.readContract({ address: taskAddress, abi: TaskEscrowABI, functionName: 'status' }),
-        publicClient.readContract({ address: taskAddress, abi: TaskEscrowABI, functionName: 'category' }),
-      ])
+      // Use the getTaskInfo function which returns all task details in one call
+      const taskInfo = await publicClient.readContract({
+        address: taskAddress,
+        abi: TaskEscrowABI,
+        functionName: 'getTaskInfo'
+      })
+
+      // Destructure the returned tuple according to the ABI
+      const [
+        owner,
+        assignee,
+        taskTitle,
+        taskDescription,
+        taskCategory,
+        token,
+        rewardAmount,
+        taskDeadline,
+        taskStatus,
+        completed,
+        disputed
+      ] = taskInfo as [Address, Address, string, string, string, Address, bigint, bigint, number, boolean, boolean]
 
       setTask({
         taskAddress,
-        title: title as string,
-        poster: poster as Address,
-        completer: completer as Address,
-        reward: reward as number,
-        deadline: deadline as string,
-        description: description as string,
-        status: status as string,
-        category: category as string,
+        title: taskTitle,
+        poster: owner,
+        completer: assignee,
+        reward: Number(rewardAmount),
+        deadline: taskDeadline.toString(),
+        description: taskDescription,
+        status: taskStatus.toString(),
+        category: taskCategory,
+        tokenAddress: token,
+        completed: completed,
+        disputed: disputed
       })
     } catch (err) {
       console.error('Error fetching task:', err)
